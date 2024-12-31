@@ -11,7 +11,7 @@ import pandas as pd
 def count_word_details(word_vec):
 
     if not isinstance(word_vec, list):
-        raise TypeError("La entrada de debe ser una lista")
+        raise TypeError("La entrada de la función de debe ser una lista")
 
     # con la función set nos quedamos con los valores únicos de frecuencias
     # podemos iterar sobre él para contar las veces que un elemento/palabra se repite
