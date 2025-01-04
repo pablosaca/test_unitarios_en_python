@@ -5,158 +5,108 @@
 # **************************************************************
 
 import unittest
-import numpy as np
-import pandas as pd
-from functions.functions import (
-    count_word_details,
-    impar_number,
-    cummulative_impar_number,
-    number_to_string,
-    cummulative_string,
-    check_user_character,
-    word_starts_with_character,
-    filter_words_by_starting_character
-)
+from functions.functions import euclidean_distance
 
 
 class TestFunctions(unittest.TestCase):
 
-    def tests_function_count_word_details(self):
-        """Tests Unitarios de la función count_word_details"""
+    def tests_functional_euclidean_distance(self):
+        """Tests Unitarios resultados funcionales de la función euclidean_distance"""
 
-        word_list = ["master", "formacion", "datos", "analitica", "aprendizaje", "estadistica"]
+        _input_1 = {
+            "first_point": (2, 3),
+            "second_point": (2, 3)
+        }
+        output_1 = euclidean_distance(_input_1)  # salida de la función
+        self.assertIsInstance(output_1, (int, float))  # chequeo la salida es un número
+        self.assertEqual(output_1, 0)  # chequeamos que la distancia entre el mismo punto debe ser 0
 
-        word_vec = np.array(word_list)  # conversión a vector de numpy
+        _input_2 = {
+            "first_point": (2, 0),
+            "second_point": (0, 0)
+        }
+        self.assertEqual(euclidean_distance(_input_2), 2)
+        # el resultado es 2 porque: sqrt((2-0)^2 + (0-0)^2) -> solo nos movemos por el eje X, el eje Y es 0
+
+        _input_3 = {
+            "first_point": (16, 5),
+            "second_point": (11, 3)
+        }
+        output_3 = euclidean_distance(_input_3)  # resultado teórico -> 5.385164807134504
+        self.assertEqual(round(output_3, 3), 5.385)  # comparamos 3 decimales
+
+    def tests_errors_euclidean_distance(self):
+        """Tests Unitarios gestión de errores input de la función euclidean_distance"""
+
+        # comprobamos que pasa si le pasamos una lista como input -> debe saltar un error porque solo admite diccionario
+        # puedes probar a pasarle un texto, lista, número, etc.
+        _input_0 = (2, 3, 2, 3)
         self.assertRaisesRegex(
-            TypeError, "La entrada de la función debe ser una lista", count_word_details, word_vec
+            TypeError, "La entrada de la función debe ser un diccionario", euclidean_distance, _input_0
         )
 
-        output = count_word_details(word_list)  # salida de la función
-        self.assertIsInstance(output, pd.DataFrame)  # chequeo la salida es un dataframe
-        self.assertEqual(output.shape[1], 2)  # chequeamos el número de columnas
-        self.assertEqual(output.shape[0], 6)  # chequeamos el número de filas
-        self.assertListEqual(list(output.columns), ["n_cocurrencia_palabra", "n_caracteres_palabra"])  # chequeamos el nombre de las columnas del dataframe
-
-    def tests_function_impar_number(self):
-        """Tests Unitarios de la función impar-par"""
-
+        # hay que escapar los corchetes (uso de \ con [)
+        _input_00 = {
+            "first_point": (2, 3),
+            "second_point": (4, 9),
+            "tird_point": (0, 0)
+        }
         self.assertRaisesRegex(
-            TypeError, "El valor introducido no es un número. Prueba otra vez.", impar_number, np.array(["hola"])
-        )
-        self.assertRaisesRegex(
-            TypeError, "El valor introducido no es un número entero: 5.5. Prueba otra vez.", impar_number, 5.5
+            ValueError,
+            "El diccionario debe tener 2 claves. Has instroducido un diccionario con 3 claves",
+            euclidean_distance,
+            _input_00
         )
 
-        self.assertEqual(impar_number(5), 5)  # chequeamos que el número sea impar
-        self.assertEqual(impar_number(6), 0)  # chequeamos que el número sea par
-
-    def tests_function_cummulative_impar_number(self):
-        """Tests Unitarios de la función cummulative_impar_number"""
-
+        # comprobamos que las claves del diccionario sean las admitidas por la función
+        _input_1 = {
+            "primer_punto": (2, 3),
+            "segundo_punto": (2, 3)
+        }
+        # hay que escapar los corchetes (uso de \) en el mensaje comparativo
         self.assertRaisesRegex(
-            TypeError, "La entrada de la función debe ser una lista",
-            cummulative_impar_number,
-            np.array([15, 3, 10])
+            ValueError,
+            "Revisa los valores de entrada de las claves. Solo disponible \['first_point', 'second_point'\]",
+            euclidean_distance,
+            _input_1
         )
-        self.assertRaisesRegex(
-            TypeError, "La entrada de la función debe ser una lista", cummulative_impar_number, 10
-        )
+        # también podemos usar assertRaises sin mensaje, si bien, como es de esperar, es menos restrictivo
+        self.assertRaises(ValueError, euclidean_distance, _input_1)
 
+        # comprobamos que los valores de las coordenadas (claves) sean tuplas
+        _input_2 = {
+            "first_point": (2, 3),
+            "second_point": [4, 8]
+        }
         self.assertRaisesRegex(
-            TypeError, "El valor introducido no es un número. Prueba otra vez.",
-            cummulative_impar_number,
-            [10, 5, 2, "uned"]
-        )  # realmente está chequeando la función impar_number
-
-        self.assertEqual(cummulative_impar_number([6, 4, 2]), 0)  # chequeamos resultado de la suma (igualdad)
-        self.assertEqual(cummulative_impar_number([3, 2, 5, 10]), 8)  # chequeamos resultado de la suma (igualdad)
-        self.assertGreater(cummulative_impar_number([15]), 0)  # chequeamos resultado de la suma (mayor que cero)
-        self.assertLessEqual(cummulative_impar_number([15, 2, 5, 10, 5]), 30)  # chequeamos resultado de la suma (menor o igual)
-        self.assertIsInstance(cummulative_impar_number([15, 2, 5, 10, 5]), (int, float))
-
-    def tests_function_number_to_string(self):
-        """Tests Unitarios de la función number_to_string"""
-
-        self.assertRaisesRegex(
-            TypeError, "El valor introducido no es un número. Prueba otra vez.", number_to_string, "hola"
-        )
-        self.assertRaisesRegex(
-            TypeError, "El valor introducido no es un número entero: 5.5. Prueba otra vez.", number_to_string, 5.5
+            TypeError,
+            "La posición de las coordenadas debe venir como tupla de valores enteros o float",
+            euclidean_distance,
+            _input_2
         )
 
-        self.assertIsInstance(number_to_string(5), str)  # chequeamos la salida es un string
-        self.assertEqual(len(number_to_string(5)), 5)  # chequeamos la longitud de la cadena de caracteres
-
-    def tests_function_cummulative_string(self):
-        """Tests Unitarios de la función cummulative_string"""
-
+        # comprobamos que los valores de las coordenadas (tuplas) tienen siempre una longitud de 2 (x, e y)
+        _input_3 = {
+            "first_point": (2, 3),
+            "second_point": (4, 8, 10)
+        }
         self.assertRaisesRegex(
-            TypeError, "La entrada de la función debe ser una lista",
-            cummulative_string,
-            np.array([10, 3])
+            ValueError,
+            "El tamaño de la tupla solo puede tener 2 elementos, actualmente tiene 3",
+            euclidean_distance,
+            _input_3
         )
 
-        output = cummulative_string([5, 2])
-        self.assertIsInstance(output, pd.DataFrame)  # chequeo la salida es un dataframe
-        self.assertEqual(output.shape[1], 2)  # chequeamos el número de columnas
-        self.assertEqual(output.shape[0], 2)  # chequeamos el número de filas
-        self.assertListEqual(list(output.columns), ["numero_entrada", "string"])  # chequeamos el nombre del dataframe
-
-    def tests_function_check_user_character(self):
-        """Tests Unitarios de la función check_user_character"""
-
+       # comprobamos que los valores de las coordenadas (tuplas) sean siempre valores numéricos
+        _input_4 = {
+            "first_point": (2, 3),
+            "second_point": (4, "8")
+        }
+        # hay que escapar los paréntesis (uso de \) en el mensaje comparativo
         self.assertRaisesRegex(
-            TypeError, "El input determinado para analizar la palabra debe ser un string",
-            check_user_character,
-            5
+            ValueError,
+            "Incorrecto valor en la tupla \(4, '8'\) que representa la posición de la coordenada. "
+            "Solo se admiten números enteros o flaot",
+            euclidean_distance,
+            _input_4
         )
-        self.assertRaisesRegex(
-            ValueError, "El string debe tener un carácter. El input es un string vacío",
-            check_user_character,
-            ""
-        )
-        self.assertRaisesRegex(
-            ValueError, "Debes devolver una sola letra. Has devuelto: pablo",
-            check_user_character,
-            "pablo"
-        )
-
-        self.assertIsInstance(check_user_character("a"), str)  # chequeo la salida es un string
-        self.assertTrue(check_user_character("p") == "p")
-        self.assertFalse(check_user_character("p") == "P")  # esto solo es igual si le pasamos el tolower
-
-    def tests_function_word_starts_with_character(self):
-        """Tests Unitarios de la función word_starts_with_character"""
-
-        self.assertRaisesRegex(
-            TypeError, "La entrada debe ser un string",
-            word_starts_with_character,
-            50,
-            50
-        )  # la primera comparación es la de la palabra
-        self.assertRaisesRegex(
-            TypeError, "La entrada debe ser un string",
-            word_starts_with_character,
-            ["palabra"],
-            50
-        )  # la primera comparación es la de la palabra
-        self.assertRaisesRegex(
-            TypeError, "El input determinado para analizar la palabra debe ser un string",
-            word_starts_with_character,
-            "palabra",
-            50
-        )
-
-        self.assertIsInstance(word_starts_with_character("palabra", "M"), str)  # chequeo la salida es un string
-        self.assertTrue(word_starts_with_character("palabra", "P") == "palabra")  # coincide inicio de palabra con letra (output -> true)
-        self.assertTrue(word_starts_with_character("datos", "P") == "")  # no coincide inicio de palabra con letra -> string vacío (output -> true)
-        self.assertFalse(word_starts_with_character("datos", "P") == "datos")  # no coincide inicio de palabra con letra -> string vacío (output -> false)
-
-    def tests_function_filter_words_by_starting_character(self):
-        """Tests Unitarios de la función filter_words_by_starting_character"""
-
-        words_list = ["master", "formacion", "uned", "analisis", "datos", "analitica"]
-
-        self.assertIsInstance(filter_words_by_starting_character(words_list, "a"), str)  # chequeo la salida es un string
-        self.assertTrue(filter_words_by_starting_character(words_list, "p") == "No hay ninguna palabra que comience por p")  # no hay palabras que empiecen por p
-        self.assertTrue(filter_words_by_starting_character(words_list, "A") == "Hay 2 palabras que comienzan por A: analisis, analitica")

@@ -8,15 +8,7 @@ El proyecto contiene dos carpetas (y scripts):
 
 ## functions/functions.py
 
-Se dispone de una serie de funciones que realizan varias tares como:
-
-Recibir un vector de palabras y devuelvor el número de veces que cada palabra se repite en el vector de entrada así como el número de caracteres que tiene cada palabra
-
-Calcular la suma de los números impares proporcionados en una lista o vector de números
-
-Recibir un vector de números enteros y devuelvor una serie de cadenas de texto aleatorias según los valores del vector
-
-Imprimir aquellas palabras provenientes de una lista que empiecen por un carácter determinado
+Se dispone de una función que calcula la distancia euclídea entre dos puntos en 2D
 
 ## tests/tests.py
 Aplicación de los tests unitarios para las diferentes funciones
