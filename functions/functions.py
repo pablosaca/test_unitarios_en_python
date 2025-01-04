@@ -25,18 +25,18 @@ def input_check(values_dict):
     if not isinstance(values_dict, dict):
         raise TypeError("La entrada de la función debe ser un diccionario")
 
-    check_keys = ["first_point", "second_point"]
+    required_keys = ["first_point", "second_point"]
     input_keys = list(values_dict.keys())
     input_values = list(values_dict.values())
 
-    if len(input_keys) != len(check_keys):
+    if len(input_keys) != len(required_keys):
         raise ValueError(
             f"El diccionario debe tener 2 claves. Has instroducido un diccionario con {len(input_keys)} claves"
         )
 
-    for ckey, ikey in zip(check_keys, input_keys):
+    for ckey, ikey in zip(required_keys, input_keys):
         if ckey != ikey:
-            raise ValueError(f"Revisa los valores de entrada de las claves. Solo disponible {list(check_keys)}")
+            raise ValueError(f"Revisa los valores de entrada de las claves. Solo disponible {list(required_keys)}")
 
     for value in input_values:
         if not isinstance(value, tuple):
