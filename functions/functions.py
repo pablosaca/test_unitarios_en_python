@@ -39,15 +39,11 @@ def input_check(values_dict):
             raise ValueError(f"Revisa los valores de entrada de las claves. Solo disponible {list(required_keys)}")
 
     for value in input_values:
-        if not isinstance(value, tuple):
-            raise TypeError("La posición de las coordenadas debe venir como tupla de valores enteros o float")
-        else:
-            if len(value) != 2:
-                raise ValueError(f"El tamaño de la tupla solo puede tener 2 elementos, actualmente tiene {len(value)}")
-            else:
-                for i in value:
-                    if not isinstance(i, (int, float)):
-                        raise ValueError(
-                            f"Incorrecto valor en la tupla {value} que representa la posición de la coordenada. "
-                            f"Solo se admiten números enteros o flaot"
-                        )
+        if not isinstance(value, tuple) or len(value) != 2:
+            raise ValueError(f"El valor {value} debe ser una tupla de 2 elementos")
+
+        for i in value:
+            if not isinstance(i, (int, float)):
+                raise ValueError(
+                    f"Incorrecto valor en la tupla {value} que representa la posición de la coordenada. Solo se admiten números enteros o float"
+                )

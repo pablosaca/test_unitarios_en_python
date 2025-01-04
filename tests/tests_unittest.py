@@ -45,7 +45,6 @@ class TestFunctions(unittest.TestCase):
             TypeError, "La entrada de la función debe ser un diccionario", euclidean_distance, _input_0
         )
 
-        # hay que escapar los corchetes (uso de \ con [)
         _input_00 = {
             "first_point": (2, 3),
             "second_point": (4, 9),
@@ -78,9 +77,10 @@ class TestFunctions(unittest.TestCase):
             "first_point": (2, 3),
             "second_point": [4, 8]
         }
+        # hay que escapar los corchetes (uso de \) en el mensaje comparativo
         self.assertRaisesRegex(
-            TypeError,
-            "La posición de las coordenadas debe venir como tupla de valores enteros o float",
+            ValueError,
+            "El valor \[4, 8\] debe ser una tupla de 2 elementos",
             euclidean_distance,
             _input_2
         )
@@ -90,9 +90,10 @@ class TestFunctions(unittest.TestCase):
             "first_point": (2, 3),
             "second_point": (4, 8, 10)
         }
+        # hay que escapar los paréntesis (uso de \) en el mensaje comparativo
         self.assertRaisesRegex(
             ValueError,
-            "El tamaño de la tupla solo puede tener 2 elementos, actualmente tiene 3",
+            "El valor \(4, 8, 10\) debe ser una tupla de 2 elementos",
             euclidean_distance,
             _input_3
         )
@@ -105,8 +106,7 @@ class TestFunctions(unittest.TestCase):
         # hay que escapar los paréntesis (uso de \) en el mensaje comparativo
         self.assertRaisesRegex(
             ValueError,
-            "Incorrecto valor en la tupla \(4, '8'\) que representa la posición de la coordenada. "
-            "Solo se admiten números enteros o flaot",
+            "Incorrecto valor en la tupla \(4, '8'\) que representa la posición de la coordenada. Solo se admiten números enteros o float",
             euclidean_distance,
             _input_4
         )
