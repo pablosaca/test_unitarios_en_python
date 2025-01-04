@@ -48,7 +48,7 @@ class TestFunctions(unittest.TestCase):
         _input_00 = {
             "first_point": (2, 3),
             "second_point": (4, 9),
-            "tird_point": (0, 0)
+            "third_point": (0, 0)
         }
         self.assertRaisesRegex(
             ValueError,

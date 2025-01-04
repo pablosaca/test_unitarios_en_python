@@ -45,5 +45,6 @@ def input_check(values_dict):
         for i in value:
             if not isinstance(i, (int, float)):
                 raise ValueError(
-                    f"Incorrecto valor en la tupla {value} que representa la posición de la coordenada. Solo se admiten números enteros o float"
+                    f"Incorrecto valor en la tupla {value} que representa la posición de la coordenada. "
+                    "Solo se admiten números enteros o float"
                 )
