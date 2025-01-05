@@ -26,6 +26,7 @@ class TestFunctions(unittest.TestCase):
             "second_point": (0, 0)
         }
         self.assertEqual(euclidean_distance(_input_2), 2)
+        self.assertTrue(euclidean_distance(_input_2) == 2)
         # el resultado es 2 porque: sqrt((2-0)^2 + (0-0)^2) -> solo nos movemos por el eje X, el eje Y es 0
 
         _input_3 = {
@@ -34,6 +35,8 @@ class TestFunctions(unittest.TestCase):
         }
         output_3 = euclidean_distance(_input_3)  # resultado teórico -> 5.385164807134504
         self.assertEqual(round(output_3, 3), 5.385)  # comparamos 3 decimales
+
+        self.assertLess(euclidean_distance(_input_3), 10)  # comparamos 3 decimales
 
     def tests_errors_euclidean_distance(self):
         """Tests Unitarios gestión de errores input de la función euclidean_distance"""
